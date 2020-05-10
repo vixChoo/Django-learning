@@ -125,7 +125,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = "/var/www/https://todovix.herokuapp/.com/static/"
+STATIC_ROOT = "/todovix.herokuapp/.com/static/"
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
