@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import mimetypes
-
+import django-heroku
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -131,3 +131,5 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 
 ]
+
+django-heroku.settings(locals())
