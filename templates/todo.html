@@ -12,10 +12,37 @@
         
         <ul id="list">
             {% for todo_item in all_items %}
-            <li>{{ todo_item.content }}
+            <li id="todo-{{todo_item.id}}">{{ todo_item.content }}
+                <!-- Button trigger modal -->
+                <button type="button" class="updateTD btn btn-outline-success" data-toggle="modal" data-target="#update-{{todo_item.id}}">
+                    Update
+                </button>
+                <!-- Uodate Modal -->
+                  <div class="modal fade" id="update-{{todo_item.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <form action="/updateTodo/" method="post" style="display: inline; margin: 10px;">{% csrf_token %}
+                            <div class="modal-body">
+                                    <input type="text" name="content" value="{{ todo_item.content }}" class="form-control"/>
+                                    <input type="hidden" name="id" value="{{todo_item.id}}">
+                            </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" value="Save Changes" class="btn btn-success"/>
+                            </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
                 <form action="/deleteTodo/" method="post" style="display: inline; margin: 10px;">{% csrf_token %}
                     <input type="hidden" name="id" value="{{todo_item.id}}">
-                    <input type="submit" value="Delete" class="btn btn-outline-danger"/>
+                    <input type="submit" value="Delete" class="deleteTD btn btn-outline-danger"/>
                 </form>
             </li>
             {% endfor %}
@@ -23,9 +50,100 @@
 
         <!-- Add form input  -->
         <form id="addTD" action="/addTodo/" method="post">{% csrf_token %}
-            <input type="text" name="content" class="form-control" />
+            <input type="text" name="content" class="form-control"/>
             <input type="submit" value="Add" class="btn btn-outline-primary" />
         </form>
     </div>
     {% endblock content %}
+
+
+{% block javascript %}
+<script>
+// add todo item submit
+$("#addTD").submit(function (e) {
+    // preventing from page reload and default actions
+    e.preventDefault();
+    // serialize the data for sending the form data.
+    var serializedData = $(this).serialize();
+    // make POST ajax call
+    $.ajax({
+        type: 'POST',
+        url: "{% url 'addTodo' %}",
+        data: serializedData,
+        success: function (response) {
+            // on successfull creating object
+            // 1. clear the form.
+            $("#addTD").trigger('reset');
+
+            var new_todo = JSON.parse(response["new_item"]);
+            var fields = new_todo[0]["fields"];
+            var id = new_todo[0]["pk"]
+            $("#list").prepend(
+                `<li id="todo-${id}">${fields["content"]}
+                        <!-- Button trigger modal -->
+                    <button type="button" class="updateTD btn btn-outline-success" data-toggle="modal" data-target="#update-${id}">
+                        Update
+                    </button>
+                    <!-- Uodate Modal -->
+                    <div class="modal fade" id="update-${id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <form action="/updateTodo/" method="post" style="display: inline; margin: 10px;">{% csrf_token %}
+                                <div class="modal-body">
+                                        <input type="text" name="content" value="${fields["content"]}" class="form-control"/>
+                                        <input type="hidden" name="id" value="${id}">
+                                </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <input type="submit" value="Save Changes" class="btn btn-success"/>
+                                </div>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                    <form id="deleteTD" action="/deleteTodo/" method="post" style="display: inline; margin: 10px;">{% csrf_token %}
+                        <input type="hidden" name="id" value="${id}">
+                        <input type="submit" value="Delete" class="deleteTD btn btn-outline-danger"/>
+                    </form>
+                </li>`
+            )
+            
+        },
+        error: function (response) {
+            // alert the error if any error occured
+            alert(response["responseJSON"]["error"]);
+        }
+    })
+})
+
+function deleteTodo(id) {
+    let confirmation = confirm("are you sure you want to remove the item?");
+    let todo_id = id;
+    $.ajax({
+       url:"{% url 'deleteTodo' %}",
+       data: {
+           'csrfmiddlewaretoken': "{{ csrf_token }}",
+            url : "{% url 'todo_view' %}"
+       },
+       type: "POST",
+       dataType: "json",
+         }).done(
+              function(){
+                alert("Deleted");
+            }
+            ).fail(
+              function(){alert("Error");}
+            ) 
+            window.location.href = data.url;
+       }
+
+</script>
+{% endblock javascript %}
+    
 

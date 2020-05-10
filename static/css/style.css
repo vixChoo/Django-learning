@@ -19,7 +19,13 @@ li{
     min-height: 55px;
 }
 
-ul input{
+ul .updateTD{
+    position: absolute;
+    top: 0;
+    right: 15%;
+}
+
+ul input.deleteTD{
     position: absolute;
     top: 0;
     right: 0;
