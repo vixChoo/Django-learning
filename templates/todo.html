@@ -1,0 +1,31 @@
+    {% extends "base.html" %}
+
+    {% load static %}
+    <title>{% block title %} Vixtrum to do list {% endblock title %}</title>
+    {% block style %}
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css"/>
+    {% endblock style %}
+    {% block content %}
+    
+    <div class="container-fluid">
+        <h1>To do list</h1>
+        
+        <ul id="list">
+            {% for todo_item in all_items %}
+            <li>{{ todo_item.content }}
+                <form action="/deleteTodo/" method="post" style="display: inline; margin: 10px;">{% csrf_token %}
+                    <input type="hidden" name="id" value="{{todo_item.id}}">
+                    <input type="submit" value="Delete" class="btn btn-outline-danger"/>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Add form input  -->
+        <form id="addTD" action="/addTodo/" method="post">{% csrf_token %}
+            <input type="text" name="content" class="form-control" />
+            <input type="submit" value="Add" class="btn btn-outline-primary" />
+        </form>
+    </div>
+    {% endblock content %}
+
