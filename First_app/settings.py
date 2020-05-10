@@ -28,7 +28,7 @@ SECRET_KEY = '5q80_m_!typ%kfx*i+b58tq@r83uv1e$ugj*re-bf@=dx+lctj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["todovix.herokuapp.com","127.0.0.1"]
 
 
 # Application definition
