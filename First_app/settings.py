@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import mimetypes
 import django_heroku
 
 
@@ -132,4 +131,3 @@ STATICFILES_DIRS = [
 
 ]
 
-django_heroku.settings(locals())
