@@ -26,5 +26,5 @@ urlpatterns = [
     path('todo/', todo_view, name = "todo_view"),	
     path('addTodo/', addTodo, name = "addTodo"),
     path('deleteTodo/', deleteTodo, name='deleteTodo'),	
-    path('updateTodo/', updateTodo, name='updateTodo'),	+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('updateTodo/', updateTodo, name='updateTodo'),	
 ]
